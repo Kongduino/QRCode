@@ -18,8 +18,9 @@ void setup() {
   uint32_t dt = millis();
   // Create the QR code
   QRCode qrcode;
-  uint8_t qrcodeData[qrcode_getBufferSize(3)];
-  qrcode_initText(&qrcode, qrcodeData, 3, 0, "I love you 임민지!");
+  uint8_t version=6;
+  uint8_t qrcodeData[qrcode_getBufferSize(version)];
+  qrcode_initText(&qrcode, qrcodeData, version, 0, "Kongduino|HONG KONG|http://kongduino.wordpress.com|KONGDUINO@GMAIL.COM");
   // Delta time
   dt = millis() - dt;
   Serial.print(F("QR Code Generation Time: "));

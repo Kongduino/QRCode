@@ -40,12 +40,14 @@ qrcode_initText(&qrcode, qrcodeBytes, 3, ECC_LOW, "HELLO WORLD");
 
 How a QR code is used will vary greatly from project to project. For example:
 
-- Display on an OLED screen (128x64 nicely supports 2 side-by-side version 3 QR codes)
-- Print as a bitmap on a thermal printer
-- Store as a BMP (or with a some extra work, possibly a PNG) on an SD card
+- Display on an OLED screen (128x64 nicely supports 2 side-by-side version 3 QR codes).
+- Display it on a regular LCD screen, like in the updated example sketch.
+- Print as a bitmap on a thermal printer.
+- Store as a BMP (or with a some extra work, possibly a PNG) on an SD card.
 
 The following example prints a QR code to the Serial Monitor (it likely will
 not be scannable, but is just for demonstration purposes).
+--> [Kongduino] It actually works, I managed to scan correctly the generated plain-text QR code on my Android with QR Droid.
 
 ```c
 for (uint8 y = 0; y < qrcode.size; y++) {
@@ -59,7 +61,6 @@ for (uint8 y = 0; y < qrcode.size; y++) {
     Serial.print("\n");
 }
 ```
-
 
 What is Version, Error Correction and Mode?
 -------------------------------------------

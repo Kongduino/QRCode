@@ -1,56 +1,50 @@
-/**
- *  QRCode
- *
- *  A quick example of generating a QR code.
- *
- *  This prints the QR code to the serial monitor as solid blocks. Each module
- *  is two characters wide, since the monospace font used in the serial monitor
- *  is approximately twice as tall as wide.
- *
- */
-
+#include <Wire.h>
 #include "qrcode.h"
+#include <UTFT.h>
+
+#define TFT_WR    4 //SCL
+#define TFT_RS    3 //SDA
+#define TFT_DC    6 //A0
+#define TFT_REST  5 //RESET
+#define TFT_CS    7 //CSE
+UTFT myGLCD(ILI9341_S5P, TFT_RS, TFT_WR, TFT_CS, TFT_REST, TFT_DC);
 
 void setup() {
-    Serial.begin(115200);
-
-    // Start time
-    uint32_t dt = millis();
-  
-    // Create the QR code
-    QRCode qrcode;
-    uint8_t qrcodeData[qrcode_getBufferSize(3)];
-    qrcode_initText(&qrcode, qrcodeData, 3, 0, "HELLO WORLD");
-  
-    // Delta time
-    dt = millis() - dt;
-    Serial.print("QR Code Generation Time: ");
-    Serial.print(dt);
-    Serial.print("\n");
-
-    // Top quiet zone
-    Serial.print("\n\n\n\n");
-
-    for (uint8_t y = 0; y < qrcode.size; y++) {
-
-        // Left quiet zone
-        Serial.print("        ");
-
-        // Each horizontal module
-        for (uint8_t x = 0; x < qrcode.size; x++) {
-
-            // Print each module (UTF-8 \u2588 is a solid block)
-            Serial.print(qrcode_getModule(&qrcode, x, y) ? "\u2588\u2588": "  ");
-
-        }
-
-        Serial.print("\n");
+  Serial.begin(115200);
+  myGLCD.InitLCD();
+  myGLCD.fillScr(255, 255, 255);
+  myGLCD.setColor(0, 0, 0);
+  // Start time
+  uint32_t dt = millis();
+  // Create the QR code
+  QRCode qrcode;
+  uint8_t qrcodeData[qrcode_getBufferSize(3)];
+  qrcode_initText(&qrcode, qrcodeData, 3, 0, "I love you 임민지!");
+  // Delta time
+  dt = millis() - dt;
+  Serial.print(F("QR Code Generation Time: "));
+  Serial.print(dt);
+  Serial.print("\n");
+  // Top quiet zone
+  Serial.print("\n\n\n\n");
+  uint8_t thickness=220/qrcode.size;
+  uint8_t xOffset=(320-(qrcode.size*thickness))/2;
+  uint8_t yOffset=(240-(qrcode.size*thickness))/2;
+  for (uint8_t y = 0; y < qrcode.size; y++) {
+    // Left quiet zone
+    Serial.print("        ");
+    // Each horizontal module
+    for (uint8_t x = 0; x < qrcode.size; x++) {
+      // Print each module (UTF-8 \u2588 is a solid block)
+      bool q=qrcode_getModule(&qrcode, x, y);
+      Serial.print(q ? "\u2588\u2588" : "  ");
+      if(q) myGLCD.fillRect(x*thickness+xOffset, y*thickness+yOffset, x*thickness+xOffset+thickness-1, y*thickness+yOffset+thickness-1);
     }
-
-    // Bottom quiet zone
-    Serial.print("\n\n\n\n");
+    Serial.write('\n');
+  }
+  // Bottom quiet zone
+  Serial.print("\n\n\n\n");
 }
 
 void loop() {
-
 }
